@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculo média</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <div id="setTime"></div>
+  </head>
+  <body>
+    <form id="chat">
+      <input type="text" name="username" placeholder="Digite seu nome" />
+      <div class="messages"></div>
+      <input type="text" name="note1" placeholder="Digite sua nota 1" />
+      <input type="text" name="note2" placeholder="Digite sua nota 2" />
+      <input type="text" name="note3" placeholder="Digite sua nota 3" />
+      <button type="submit">Enviar</button>
+    </form>
+    <script type="text/javascript">
+      var socket = io("http://localhost:3333");
+
+      function renderMessage(message) {
+        $(".messages").append(
+          '<div class="message"><strong>Aluno: ' +
+            message.student +
+            "</br> " +
+            "Média:</strong> " +
+            (
+              (parseFloat(message.note1) +
+                parseFloat(message.note2) +
+                parseFloat(message.note3)) /
+              3
+            ).toFixed(2) +
+            "</br><strong>Data:</strong>" +
+            new Date() +
+            " </div>"
+        );
+      }
+
+      socket.on("receivedMessage", function (message) {
+        renderMessage(message);
+      });
+
+      socket.on("previousMessages", function (messages) {
+        for (message of messages) {
+          renderMessage(message);
+        }
+      });
+
+      $("#chat").submit(function (event) {
+        event.preventDefault();
+
+        var student = $("input[name=username").val();
+        var note1 = $("input[name=note1").val();
+        var note2 = $("input[name=note2").val();
+        var note3 = $("input[name=note3").val();
+
+        // if (student.length && note1.length && note2.length && note3.length) {
+        var messageObject = {
+          student: student,
+          note1: parseFloat(note1),
+          note2: parseFloat(note2),
+          note3: parseFloat(note3),
+        };
+        renderMessage(messageObject);
+
+        socket.emit("sendMessage", messageObject);
+        // }
+      });
+    </script>
+  </body>
+</html>
