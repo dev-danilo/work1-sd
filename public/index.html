@@ -30,12 +30,7 @@
             message.student +
             "</br> " +
             "Média:</strong> " +
-            (
-              (parseFloat(message.note1) +
-                parseFloat(message.note2) +
-                parseFloat(message.note3)) /
-              3
-            ).toFixed(2) +
+            message.average +
             "</br><strong>Data:</strong>" +
             new Date() +
             " </div>"
@@ -60,7 +55,6 @@
         var note2 = $("input[name=note2").val();
         var note3 = $("input[name=note3").val();
 
-        // if (student.length && note1.length && note2.length && note3.length) {
         var messageObject = {
           student: student,
           note1: parseFloat(note1),
@@ -70,7 +64,6 @@
         renderMessage(messageObject);
 
         socket.emit("sendMessage", messageObject);
-        // }
       });
     </script>
   </body>

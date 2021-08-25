@@ -24,11 +24,14 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (data) => {
     const { student, note1, note2, note3 } = data;
 
+    const average = (
+      (parseFloat(note1) + parseFloat(note2) + parseFloat(note3)) /
+      3
+    ).toFixed(2);
+
     const dataStudent = {
       student,
-      note1,
-      note2,
-      note3,
+      average,
     };
 
     messages.push(dataStudent);
